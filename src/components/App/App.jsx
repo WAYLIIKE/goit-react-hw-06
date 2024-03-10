@@ -5,10 +5,14 @@ import './App.css';
 import { useSelector } from 'react-redux';
 import { selectContacts } from '../../redux/contactsSlice';
 import { EmptyContacts } from '../EmptyContacts/EmptyContacts';
+import { selectNameFilter } from '../../redux/filtersSlice';
 
 function App() {
   const reduxUsers = useSelector(selectContacts);
-  // const reduxInputFilter = useSelector(selectNameFilter);
+  const reduxInputFilter = useSelector(selectNameFilter);
+  const visibleUsers = reduxUsers.filter(user =>
+    user.name.toLowerCase().includes(reduxInputFilter.toLowerCase()),
+  );
 
   return (
     <div>
@@ -16,7 +20,9 @@ function App() {
       <ContactForm />
       <SearchBox />
       <ContactList />
-      {reduxUsers.length === 0 && <EmptyContacts />}
+      {(reduxUsers.length === 0 || visibleUsers.length === 0) && (
+        <EmptyContacts />
+      )}
     </div>
   );
 }
